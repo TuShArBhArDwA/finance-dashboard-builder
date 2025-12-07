@@ -5,94 +5,70 @@ Complete guide to the codebase organization and architecture.
 ## Directory Layout
 
 ```
-finboard/
+finboard-dashboard-builder/
 ├── app/                          # Next.js App Router
 │   ├── layout.tsx               # Root layout with metadata
 │   ├── page.tsx                 # Home page component
 │   ├── globals.css              # Global styles & design tokens
-│   ├── api/                     # API routes (optional)
-│   │   └── proxy/
-│   │       └── route.ts         # CORS proxy endpoint
-│   └── dashboard/               # Dashboard pages (optional)
 │
-├── components/                   # React components
-│   ├── dashboard/               # Dashboard-specific components
-│   │   ├── dashboard-header.tsx     # Top header with title & buttons
-│   │   ├── dashboard-grid.tsx       # Main grid with drag-and-drop
-│   │   ├── widget-card.tsx          # Base widget container
-│   │   ├── card-widget.tsx          # Card display mode
-│   │   ├── table-widget.tsx         # Table display mode
-│   │   ├── chart-widget.tsx         # Chart display mode
-│   │   ├── add-widget-modal.tsx     # Widget creation form
-│   │   ├── example-widgets.tsx      # Quick start buttons
-│   │   └── export-import.tsx        # Config import/export
-│   ├── ui/                       # shadcn/ui components
+├── components/                        # React UI & dashboard components
+│   ├── dashboard/                     # Dashboard core components
+│   │   ├── add-widget-modal.tsx       # Widget creation & configuration modal
+│   │   ├── card-widget.tsx            # Card view widget renderer
+│   │   ├── chart-widget.tsx           # Chart view widget renderer
+│   │   ├── table-widget.tsx           # Table view widget renderer
+│   │   ├── widget-card.tsx            # Base widget container structure
+│   │   ├── dashboard-header.tsx       # Top header with app controls
+│   │   ├── dashboard-grid.tsx         # Drag-and-drop grid container
+│   │   ├── example-widgets.tsx        # Prebuilt quick-start templates
+│   │   └── export-import.tsx          # Export / Import config JSON
+│   │
+│   ├── templates/                     # Dashboard Template system
+│   │   ├── template-gallery.tsx       # Template listing UI
+│   │   └── template-selector-modal.tsx# Template pick modal
+│   │
+│   ├── theme/                         # Light/Dark mode system
+│   │   ├── theme-provider.tsx         # Theme context wrapper
+│   │   └── theme-toggle.tsx           # Theme switch button
+│   │
+│   └── ui/                            # Reusable ShadCN UI components
+│   │   ├── alert-dialog.tsx
 │   │   ├── button.tsx
-│   │   ├── input.tsx
-│   │   ├── dialog.tsx
 │   │   ├── card.tsx
+│   │   ├── dialog.tsx
+│   │   ├── input.tsx
 │   │   ├── skeleton.tsx
-│   │   └── ...
-│   └── theme-provider.tsx        # Theme setup (if needed)
+│   │   ├── toast.tsx
+│   │   └── toaster.tsx
+│   └── theme-provider.tsx        # Theme setup 
 │
-├── lib/                          # Utility functions
-│   ├── api-utils.ts            # API testing & JSON parsing
-│   ├── storage.ts              # localStorage helpers
-│   ├── finance-examples.ts     # Example API configurations
-│   └── utils.ts                # General utilities (cn function)
+├── hooks/                              # Custom React Hooks
+│   └── use-toast.ts                    # Toast notification handler
 │
-├── store/                        # State management
-│   └── dashboard-store.ts      # Zustand store with widget state
+├── lib/                                # Utility & core logic
+│   ├── api-utils.ts                    # API testing & JSON parsing utilities
+│   ├── dashboard-templates.ts          # Prebuilt dashboard layout templates
+│   ├── finance-examples.ts             # Example finance API configurations
+│   ├── storage.ts                      # LocalStorage persistence helpers
+│   ├── utils.ts                        # Shared utility helpers (e.g. cn)
+│   └── websocket-manager.ts            # WebSocket handler for live data
 │
-├── hooks/                        # Custom React hooks
-│   ├── use-mobile.ts           # Mobile breakpoint detector
-│   └── use-toast.ts            # Toast notifications
-│
-├── public/                       # Static assets
-│   ├── icon.svg
+├── public/                             # Static public assets
 │   ├── apple-icon.png
-│   └── placeholder.svg
+│   ├── icon-dark-32x32.png
+│   ├── icon-light-32x32.png
+│   ├── icon.svg
+│   └── ...
 │
-├── docs/                         # Documentation files
-│   ├── README.md               # Main documentation
-│   ├── SETUP_GUIDE.md         # Development setup
-│   ├── DEPLOYMENT.md          # Deployment instructions
-│   ├── API_EXAMPLES.md        # API configurations
-│   └── PROJECT_STRUCTURE.md   # This file
-│
-├── .github/
-│   └── workflows/              # GitHub Actions (optional)
-│
-├── package.json                # Dependencies & scripts
-├── tsconfig.json              # TypeScript configuration
-├── tailwind.config.js         # Tailwind CSS config
-├── postcss.config.mjs         # PostCSS configuration
-├── next.config.mjs            # Next.js configuration
-└── .gitignore                 # Git ignore rules
-```
-
-## Component Architecture
-
-### Dashboard Components Hierarchy
-
-```
-<RootLayout>
-  └── <HomePage>
-      ├── <DashboardHeader>
-      │   └── <ExportImportButtons>
-      ├── <DashboardGrid>
-      │   └── <SortableContext> (dnd-kit)
-      │       ├── <SortableWidgetItem>
-      │       │   ├── <CardWidget>
-      │       │   │   └── <WidgetCard>
-      │       │   ├── <TableWidget>
-      │       │   │   └── <WidgetCard>
-      │       │   └── <ChartWidget>
-      │       │       └── <WidgetCard>
-      │       └── <AddWidget Button>
-      ├── <AddWidgetModal>
-      │   └── <JSONFieldExplorer>
-      └── <ExampleWidgetsPanel>
+├── .gitignore
+├── PROJECT_STRUCTURE.md                # Full architecture documentation
+├── README.md                           # Main project overview
+├── components.json                     # shadcn component index
+├── next-env.d.ts                       # TS definitions for Next.js
+├── next.config.mjs                     # Next.js project config
+├── package.json
+├── package-lock.json
+└── tsconfig.json                       # TypeScript configuration
 ```
 
 ## Data Flow
@@ -314,26 +290,6 @@ Approximate production bundle:
 - **date-fns**: Date formatting
 - **zod**: Schema validation
 - **clsx**: Classname utilities
-
-## Version Information
-
-| Package | Version | Purpose |
-|---------|---------|---------|
-| Next.js | 16.0.7 | Framework |
-| React | 19.2.0 | UI Library |
-| Node.js | 18+ | Runtime |
-| TypeScript | ^5 | Type checking |
-
-## Future Improvements
-
-- [ ] WebSocket support for live updates
-- [ ] User authentication & cloud sync
-- [ ] Widget templates
-- [ ] Custom CSS for widgets
-- [ ] Data export to CSV/Excel
-- [ ] Real-time notifications
-- [ ] Mobile app (React Native)
-- [ ] Collaborative dashboards
 
 ---
 
