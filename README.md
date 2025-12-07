@@ -2,17 +2,49 @@
 
 A modern, customizable finance dashboard application built with Next.js, React, and Zustand. Connect to any financial API and create real-time widgets with drag-and-drop support.
 
+## Table of Contents
+
+- [Features](#features)
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Run Development Server](#run-development-server)
+- [How to Use](#how-to-use)
+  - [Adding Your First Widget](#adding-your-first-widget)
+  - [Quick Start Examples](#quick-start-examples)
+  - [Free APIs to Try](#free-apis-to-try)
+- [Architecture](#architecture)
+  - [Project Structure](#project-structure)
+  - [State Management](#state-management)
+  - [Data Persistence](#data-persistence)
+- [Tech Stack](#tech-stack)
+- [Features Explained](#features-explained)
+  - [Widget System](#widget-system)
+  - [JSON Field Explorer](#json-field-explorer)
+  - [Auto-Refresh](#auto-refresh)
+  - [Drag & Drop](#drag--drop)
+  - [Theme Toggle](#theme-toggle)
+- [Deployment](#deployment)
+- [API Rate Limiting](#api-rate-limiting)
+- [Troubleshooting](#troubleshooting)
+- [Examples & Ideas](#examples--ideas)
+- [Future Enhancements](#future-enhancements)
+- [Contributing](#contributing)
+- [License](#license)
+- [Support](#support)
+
+
 ## Features
 
 ✨ **Core Features**
-- 🔌 Connect to any JSON finance API (Coinbase, Alpha Vantage, Finnhub, etc.)
-- 📊 Multiple display modes: Card, Table, and Chart views
-- 🎯 Dynamic JSON field selection with smart explorer
-- 🔄 Auto-refresh data at custom intervals
-- 🎨 Drag-and-drop widget rearrangement
-- 💾 Persistent dashboard configuration in browser storage
-- 🌙 Modern dark theme UI
-- ⚡ Real-time data updates
+- Connect to any JSON finance API (Coinbase, Alpha Vantage, Finnhub, etc.)
+- Multiple display modes: Card, Table, and Chart views
+- Dynamic JSON field selection with smart explorer
+- Auto-refresh data at custom intervals
+- Drag-and-drop widget rearrangement
+- Persistent dashboard configuration in browser storage
+- Light / Dark **Theme Toggle** 
+- Real-time data updates
 
 ## Getting Started
 
@@ -24,21 +56,17 @@ A modern, customizable finance dashboard application built with Next.js, React, 
 
 1. Clone the repository
 ```bash
-git clone <repository-url>
-cd finboard
+git clone https://github.com/TuShArBhArDwA/finance-dashboard-builder
+cd finance-dashboard-builder
 ```
 
 2. Install dependencies
 ```bash
 npm install
-# or
-yarn install
 ```
 3. Run the development server
 ```bash
 npm run dev
-# or
-yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
