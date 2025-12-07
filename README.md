@@ -4,11 +4,16 @@ A modern, customizable finance dashboard application built with Next.js, React, 
 
 ## Table of Contents
 
-- [Features](#features)
+- [Features](#-features)
+  - [Core Functionality](#core-functionality)
+  - [UI--experience](#ui--experience)
+  - [Data Handling--performance](#data-handling--performance)
+  - [Dashboard Management](#dashboard-management)
+  - [Widget Types](#widget-types)
+  - [Bonus Features Brownie Points](#bonus-features-brownie-points)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
-  - [Run Development Server](#run-development-server)
 - [How to Use](#how-to-use)
   - [Adding Your First Widget](#adding-your-first-widget)
   - [Quick Start Examples](#quick-start-examples)
@@ -25,26 +30,52 @@ A modern, customizable finance dashboard application built with Next.js, React, 
   - [Drag & Drop](#drag--drop)
   - [Theme Toggle](#theme-toggle)
 - [Deployment](#deployment)
-- [API Rate Limiting](#api-rate-limiting)
 - [Troubleshooting](#troubleshooting)
-- [Examples & Ideas](#examples--ideas)
-- [Future Enhancements](#future-enhancements)
-- [Contributing](#contributing)
-- [License](#license)
-- [Support](#support)
 
 
 ## Features
 
-✨ **Core Features**
-- Connect to any JSON finance API (Coinbase, Alpha Vantage, Finnhub, etc.)
-- Multiple display modes: Card, Table, and Chart views
-- Dynamic JSON field selection with smart explorer
-- Auto-refresh data at custom intervals
-- Drag-and-drop widget rearrangement
-- Persistent dashboard configuration in browser storage
-- Light / Dark **Theme Toggle** 
-- Real-time data updates
+### Core Functionality
+- Connect to any JSON-based financial API (Coinbase, Finnhub, AlphaVantage, CoinGecko, etc.)
+- Customizable Widgets for Cards, Tables, and Charts
+- Dynamic Data Mapping — explore API response and select specific fields to display
+- Auto-refresh with configurable intervals
+- Real-time data update support (socket-ready architecture)
+- Add, remove, and rename widgets
+- Drag-and-drop widget rearrangement (dnd-kit)
+- Widget configuration panel with flexible customization options
+- Advanced data formatting (currency, percentage, decimal formatting)
+
+### UI & Experience
+- Light / Dark Theme Toggle with persistence
+- Clean, modern UI built using ShadCN and Tailwind CSS
+- Loading, error, and empty state handling for all widgets
+- Responsive design for all screen sizes
+- Interactive JSON field explorer
+- Editable widget titles and descriptions
+
+### Data Handling & Performance
+- Real-time updates and auto-refresh handling with graceful failovers
+- Caching and throttling to reduce redundant API requests
+- Smart JSON parser for nested field mapping
+- Error boundary for API failures
+
+### Dashboard Management
+- Persistent dashboard configuration stored in browser `localStorage`
+- Full state recovery on refresh
+- Export/Import dashboard configuration (JSON backup and restore)
+- Pre-built dashboard templates (Crypto Market, Stock Monitor, Global Markets)
+
+### Widget Types
+- **Card Widgets** — display key-value metrics
+- **Table Widgets** — structured API data with search and pagination
+- **Chart Widgets** — Plot numeric fields using line charts (multi-series support)
+
+### Bonus Features (Brownie Points Implemented)
+- Dynamic theme switching
+- Real-time live data widgets (Socket-ready structure)
+- Dashboard template starter layouts
+- Flexible API endpoint switching interface
 
 ## Getting Started
 
@@ -224,12 +255,6 @@ npm run build
 npm run start
 ```
 
-## API Rate Limiting
-
-When using free APIs:
-- Respect API rate limits (usually 60-1000 requests/hour)
-- Increase refresh intervals to reduce requests
-- Monitor API provider documentation for limits
 
 ## Troubleshooting
 
@@ -248,49 +273,7 @@ When using free APIs:
 - Try clearing cache (may require re-adding widgets)
 - Check browser's privacy settings
 
-## Examples & Ideas
 
-### Investment Tracking Dashboard
-- Bitcoin and Ethereum prices (Coinbase)
-- Stock quotes (Finnhub)
-- Market indices (Alpha Vantage)
-
-### Crypto Portfolio Monitor
-- Multiple cryptocurrency prices
-- 24h change tracking
-- Market cap data
-
-### Global Markets
-- Currency exchange rates
-- Gold prices
-- Oil prices
-
-## Future Enhancements
-
-- Real-time WebSocket support for live updates
-- Export/Import dashboard configurations (JSON files)
-- Pre-built starter templates
-- Theme switcher (Light/Dark)
-- Custom API authentication (API keys)
-- Data caching with stale-while-revalidate
-- Widget customization (colors, sizes)
-- Desktop app with Tauri
-
-## Contributing
-
-Contributions are welcome! Feel free to open issues or submit PRs.
-
-## License
-
-MIT License - feel free to use this project for personal or commercial purposes.
-
-## Support
-
-For issues or questions:
-1. Check the troubleshooting section
-2. Review the code comments
-3. Check API provider documentation
-4. Open an issue on GitHub
 
 ---
 
