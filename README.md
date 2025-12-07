@@ -2,7 +2,6 @@
 
 A modern, customizable finance dashboard application built with Next.js, React, and Zustand. Connect to any financial API and create real-time widgets with drag-and-drop support.
 
-
 ## Deployed App
 🔗 Live Demo: [Click Me!](https://v0-finance-dashboard-builder-chi.vercel.app/)
 
@@ -53,6 +52,16 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 - **Charts**: Recharts
 - **Icons**: Lucide React
 - **Styling**: Tailwind CSS v4
+
+---
+
+## Architecture
+
+The application follows a modular architecture using Next.js App Router, Zustand state management, and reusable widget components.  
+The dashboard system is built around a real-time widget engine with persistence and drag-and-drop layout handling.
+
+📄 **Detailed Architecture & Project Structure:**  
+👉 [View PROJECT_STRUCTURE.md](./PROJECT_STRUCTURE.md)
 
 ---
 
