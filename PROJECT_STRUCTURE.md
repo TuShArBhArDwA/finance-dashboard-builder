@@ -4,7 +4,7 @@ Complete guide to the codebase organization and architecture.
 
 ## Directory Layout
 
-\`\`\`
+```
 finboard/
 ├── app/                          # Next.js App Router
 │   ├── layout.tsx               # Root layout with metadata
@@ -69,13 +69,13 @@ finboard/
 ├── postcss.config.mjs         # PostCSS configuration
 ├── next.config.mjs            # Next.js configuration
 └── .gitignore                 # Git ignore rules
-\`\`\`
+```
 
 ## Component Architecture
 
 ### Dashboard Components Hierarchy
 
-\`\`\`
+```
 <RootLayout>
   └── <HomePage>
       ├── <DashboardHeader>
@@ -93,13 +93,13 @@ finboard/
       ├── <AddWidgetModal>
       │   └── <JSONFieldExplorer>
       └── <ExampleWidgetsPanel>
-\`\`\`
+```
 
 ## Data Flow
 
 ### Widget Creation Flow
 
-\`\`\`
+```
 User clicks "Add Widget"
     ↓
 AddWidgetModal opens
@@ -123,11 +123,11 @@ Widget added to state (localStorage synced)
 DashboardGrid re-renders
     ↓
 Auto-refresh interval started
-\`\`\`
+```
 
 ### Data Update Flow
 
-\`\`\`
+```
 Interval triggered (every N seconds)
     ↓
 fetch() called to API URL
@@ -141,13 +141,13 @@ Widget state updated (lastUpdated timestamp)
 localStorage automatically synced (Zustand persist)
     ↓
 Component re-renders with new data
-\`\`\`
+```
 
 ## State Management
 
 ### Zustand Store Structure
 
-\`\`\`typescript
+```typescript
 interface Widget {
   id: string                      // Unique identifier
   name: string                    // User-defined name
@@ -171,21 +171,21 @@ interface DashboardStore {
   setWidgetLoading()
   setWidgetError()
 }
-\`\`\`
+```
 
 ## Styling Architecture
 
 ### Design Tokens (Tailwind CSS v4)
 
-\`\`\`css
-/* Dark theme optimized for finance */
+```css
+/* Dark and light theme optimized for finance */
 --background: oklch(0.06 0 0)          /* Very dark blue/black */
 --foreground: oklch(0.98 0 0)          /* Almost white */
 --card: oklch(0.12 0 0)                /* Slightly lighter dark */
 --primary: oklch(0.27 0.2 151.23)      /* Emerald green */
 --accent: oklch(0.27 0.2 151.23)       /* Same as primary */
 --destructive: oklch(0.577 0.245 27)   /* Red for delete */
-\`\`\`
+```
 
 ### Component Styling
 
@@ -199,15 +199,15 @@ interface DashboardStore {
 ### Supported API Types
 
 1. **Simple JSON responses**
-   \`\`\`json
+   ```json
    {
      "field1": "value",
      "field2": 123
    }
-   \`\`\`
+   ```
 
 2. **Nested objects**
-   \`\`\`json
+   ```json
    {
      "data": {
        "rates": {
@@ -215,17 +215,17 @@ interface DashboardStore {
        }
      }
    }
-   \`\`\`
+   ```
 
 3. **Arrays of objects**
-   \`\`\`json
+   ```json
    {
      "items": [
        { "name": "item1", "price": 100 },
        { "name": "item2", "price": 200 }
      ]
    }
-   \`\`\`
+   ```
 
 ### Field Selection Algorithm
 
