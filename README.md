@@ -23,24 +23,23 @@ A modern, customizable finance dashboard application built with Next.js, React, 
 ### Installation
 
 1. Clone the repository
-\`\`\`bash
+```bash
 git clone <repository-url>
 cd finboard
-\`\`\`
+```
 
 2. Install dependencies
-\`\`\`bash
+```bash
 npm install
 # or
 yarn install
-\`\`\`
-
+```
 3. Run the development server
-\`\`\`bash
+```bash
 npm run dev
 # or
 yarn dev
-\`\`\`
+```
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
@@ -80,7 +79,7 @@ The app includes quick-start buttons for popular free APIs:
 
 ### Project Structure
 
-\`\`\`
+```
 finboard/
 ├── app/
 │   ├── layout.tsx          # Root layout
@@ -104,8 +103,7 @@ finboard/
 │   ├── storage.ts         # localStorage utilities
 │   └── finance-examples.ts # Example finance APIs
 └── package.json
-
-\`\`\`
+```
 
 ### State Management
 
@@ -138,24 +136,24 @@ Dashboard configuration is automatically saved to browser `localStorage` under t
 ### Widget System
 
 **Card View**: Display simple key-value pairs from JSON data
-\`\`\`json
+```json
 {
   "Bitcoin": {
     "USD": 45000,
     "EUR": 42000
   }
 }
-\`\`\`
+```
 
 **Table View**: Display array data in sortable, searchable table
-\`\`\`json
+```json
 {
   "stocks": [
     {"symbol": "AAPL", "price": 150},
     {"symbol": "GOOGL", "price": 140}
   ]
 }
-\`\`\`
+```
 
 **Chart View**: Visualize numeric data with line charts
 - Multiple series support
@@ -193,10 +191,10 @@ When you test an API:
 3. Vercel will automatically deploy on push
 4. Your dashboard is live!
 
-\`\`\`bash
+```bash
 npm run build
 npm run start
-\`\`\`
+```
 
 ## API Rate Limiting
 
@@ -268,4 +266,4 @@ For issues or questions:
 
 ---
 
-**Happy Dashboard Building! 🚀**
+**Happy Dashboard Building!**
