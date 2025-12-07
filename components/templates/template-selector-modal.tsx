@@ -11,10 +11,10 @@ interface TemplateSelectorModalProps {
 export function TemplateSelectorModal({ open, onOpenChange }: TemplateSelectorModalProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto border-slate-700 bg-slate-900">
+      <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Dashboard Templates</DialogTitle>
-          <DialogDescription>Choose a pre-built template to get started quickly</DialogDescription>
+          <DialogDescription>Choose a pre-built template to get started quickly. All templates use free public APIs.</DialogDescription>
         </DialogHeader>
         <TemplateGallery />
       </DialogContent>

@@ -36,19 +36,23 @@ export const useDashboardStore = create<DashboardStore>()(
       widgets: [],
       currentTemplate: null,
       addWidget: (widget) =>
-        set((state) => ({
-          widgets: [
-            ...state.widgets,
-            {
-              ...widget,
-              id: `widget-${Date.now()}`,
-              data: null,
-              lastUpdated: new Date().toLocaleTimeString(),
-              loading: false,
-              error: null,
-            },
-          ],
-        })),
+        set((state) => {
+          // Generate unique ID using timestamp + random to prevent duplicates
+          const uniqueId = `widget-${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
+          return {
+            widgets: [
+              ...state.widgets,
+              {
+                ...widget,
+                id: uniqueId,
+                data: null,
+                lastUpdated: new Date().toLocaleTimeString(),
+                loading: false,
+                error: null,
+              },
+            ],
+          }
+        }),
       updateWidget: (id, updates) =>
         set((state) => ({
           widgets: state.widgets.map((w) => (w.id === id ? { ...w, ...updates } : w)),

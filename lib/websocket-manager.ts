@@ -31,8 +31,13 @@ class WebSocketManager {
       }
 
       ws.onerror = (error) => {
-        console.error(`[v0] WebSocket error for ${config.widgetId}:`, error)
-        config.onError?.(new Error("WebSocket connection error"))
+        // Only log error, don't show to user unless it's a critical failure
+        // WebSocket errors are common for invalid URLs and should fail silently
+        const errorMessage = error instanceof Error ? error.message : "WebSocket connection error"
+        // Only call onError if the connection actually fails (not just invalid URL)
+        if (ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING) {
+          config.onError?.(new Error(errorMessage))
+        }
       }
 
       ws.onclose = () => {

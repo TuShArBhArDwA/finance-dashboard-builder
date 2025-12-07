@@ -1,20 +1,24 @@
 "use client"
 
-import { useState, useMemo } from "react"
-import { useDashboardStore } from "@/store/dashboard-store"
+import { useState, useMemo, useEffect } from "react"
+import { useDashboardStore, type Widget } from "@/store/dashboard-store"
 import { testApiConnection, flattenObject } from "@/lib/api-utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { AlertCircle, CheckCircle2, Search, X } from "lucide-react"
+import { useToast } from "@/hooks/use-toast"
 
 interface AddWidgetModalProps {
   open: boolean
   onOpenChange: (open: boolean) => void
+  editingWidget?: Widget
 }
 
-export function AddWidgetModal({ open, onOpenChange }: AddWidgetModalProps) {
+export function AddWidgetModal({ open, onOpenChange, editingWidget }: AddWidgetModalProps) {
   const addWidget = useDashboardStore((state) => state.addWidget)
+  const updateWidget = useDashboardStore((state) => state.updateWidget)
+  const { toast } = useToast()
 
   const [name, setName] = useState("")
   const [apiUrl, setApiUrl] = useState("")
@@ -28,6 +32,50 @@ export function AddWidgetModal({ open, onOpenChange }: AddWidgetModalProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedFields, setSelectedFields] = useState<string[]>([])
   const [showArraysOnly, setShowArraysOnly] = useState(false)
+
+  // Initialize form with editing widget data
+  useEffect(() => {
+    if (editingWidget && open) {
+      setName(editingWidget.name)
+      setApiUrl(editingWidget.apiUrl)
+      setRefreshInterval(editingWidget.refreshInterval.toString())
+      setDisplayMode(editingWidget.displayMode)
+      setUseWebSocket(editingWidget.useWebSocket || false)
+      setWsUrl(editingWidget.wsUrl || "")
+      setSelectedFields(editingWidget.selectedFields)
+      // Auto-test the API if editing
+      if (editingWidget.apiUrl) {
+        const testApi = async () => {
+          setTestLoading(true)
+          setTestError("")
+          const result = await testApiConnection(editingWidget.apiUrl)
+          if (result.success) {
+            setTestData(result.data)
+            if (Array.isArray(result.data)) {
+              setDisplayMode("table")
+            }
+          } else {
+            setTestError(result.error || "Connection failed")
+          }
+          setTestLoading(false)
+        }
+        testApi()
+      }
+    } else if (!editingWidget && open) {
+      // Reset form for new widget
+      setName("")
+      setApiUrl("")
+      setRefreshInterval("30")
+      setDisplayMode("card")
+      setUseWebSocket(false)
+      setWsUrl("")
+      setTestData(null)
+      setSelectedFields([])
+      setSearchTerm("")
+      setTestError("")
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editingWidget, open])
 
   const availableFields = useMemo(() => {
     if (!testData) return []
@@ -67,21 +115,75 @@ export function AddWidgetModal({ open, onOpenChange }: AddWidgetModalProps) {
     setTestLoading(false)
   }
 
+  /**
+   * Handles adding or updating a widget
+   * Validates inputs and shows toast notifications
+   */
   const handleAddWidget = () => {
-    if (!name || !apiUrl || !testData || selectedFields.length === 0) {
-      setTestError("Please fill all fields and select at least one field")
+    // Validation
+    if (!name || !apiUrl) {
+      setTestError("Widget name and API URL are required")
+      toast({
+        title: "Validation error",
+        description: "Widget name and API URL are required",
+        variant: "destructive",
+      })
       return
     }
 
-    addWidget({
-      name,
-      apiUrl,
-      refreshInterval: Number.parseInt(refreshInterval),
-      displayMode,
-      selectedFields,
-      useWebSocket,
-      wsUrl: useWebSocket ? wsUrl : undefined,
-    })
+    if (!testData) {
+      setTestError("Please test the API connection first")
+      toast({
+        title: "Validation error",
+        description: "Please test the API connection first",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (selectedFields.length === 0) {
+      setTestError("Please select at least one field to display")
+      toast({
+        title: "Validation error",
+        description: "Please select at least one field to display",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (editingWidget) {
+      // Update existing widget
+      updateWidget(editingWidget.id, {
+        name,
+        apiUrl,
+        refreshInterval: Number.parseInt(refreshInterval),
+        displayMode,
+        selectedFields,
+        useWebSocket,
+        wsUrl: useWebSocket ? wsUrl : undefined,
+      })
+      toast({
+        title: "Widget updated",
+        description: `${name} has been updated successfully`,
+        variant: "success",
+      })
+    } else {
+      // Add new widget
+      addWidget({
+        name,
+        apiUrl,
+        refreshInterval: Number.parseInt(refreshInterval),
+        displayMode,
+        selectedFields,
+        useWebSocket,
+        wsUrl: useWebSocket ? wsUrl : undefined,
+      })
+      toast({
+        title: "Widget added",
+        description: `${name} has been added to your dashboard`,
+        variant: "success",
+      })
+    }
 
     // Reset form
     setName("")
@@ -93,6 +195,7 @@ export function AddWidgetModal({ open, onOpenChange }: AddWidgetModalProps) {
     setTestData(null)
     setSelectedFields([])
     setSearchTerm("")
+    setTestError("")
     onOpenChange(false)
   }
 
@@ -100,9 +203,11 @@ export function AddWidgetModal({ open, onOpenChange }: AddWidgetModalProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl bg-slate-900 border-slate-800 text-white overflow-y-auto max-h-[90vh]">
         <DialogHeader>
-          <DialogTitle>Add New Widget</DialogTitle>
+          <DialogTitle>{editingWidget ? "Edit Widget" : "Add New Widget"}</DialogTitle>
           <DialogDescription className="text-slate-400">
-            Connect to a finance API and create a custom widget
+            {editingWidget
+              ? "Update widget configuration and API settings"
+              : "Connect to a finance API and create a custom widget"}
           </DialogDescription>
         </DialogHeader>
 
@@ -233,34 +338,57 @@ export function AddWidgetModal({ open, onOpenChange }: AddWidgetModalProps) {
                 </label>
 
                 {/* Available Fields */}
-                <div className="mb-4 max-h-40 overflow-y-auto rounded bg-slate-800 p-3 space-y-2">
+                <div className="mb-4 max-h-48 overflow-y-auto rounded bg-slate-800 p-3 space-y-2 border border-slate-700">
                   {availableFields.length === 0 ? (
-                    <p className="text-sm text-slate-500">No fields found</p>
+                    <div className="text-center py-4">
+                      <p className="text-sm text-slate-500">No fields found</p>
+                      <p className="text-xs text-slate-600 mt-1">Try adjusting your search or filters</p>
+                    </div>
                   ) : (
-                    availableFields.map((field) => (
-                      <div
-                        key={field.key}
-                        className="flex items-center justify-between p-2 rounded hover:bg-slate-700 cursor-pointer"
-                        onClick={() => {
-                          setSelectedFields((prev) =>
-                            prev.includes(field.key) ? prev.filter((f) => f !== field.key) : [...prev, field.key],
-                          )
-                        }}
-                      >
-                        <div>
-                          <p className="text-sm font-medium">{field.key}</p>
-                          <p className="text-xs text-slate-500">
-                            {field.type} | {JSON.stringify(field.preview).slice(0, 50)}
-                          </p>
+                    availableFields.map((field) => {
+                      const isSelected = selectedFields.includes(field.key)
+                      const isArray = field.type === "array"
+                      return (
+                        <div
+                          key={field.key}
+                          className={`flex items-center justify-between p-2 rounded cursor-pointer transition-colors ${
+                            isSelected
+                              ? "bg-emerald-500/20 border border-emerald-500/50"
+                              : "hover:bg-slate-700 border border-transparent"
+                          }`}
+                          onClick={() => {
+                            setSelectedFields((prev) =>
+                              prev.includes(field.key) ? prev.filter((f) => f !== field.key) : [...prev, field.key],
+                            )
+                          }}
+                        >
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p className="text-sm font-medium text-white truncate">{field.key}</p>
+                              {isArray && (
+                                <span className="text-xs px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-400">
+                                  Array
+                                </span>
+                              )}
+                              <span className="text-xs px-1.5 py-0.5 rounded bg-slate-700 text-slate-400">
+                                {field.type}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-500 mt-1 truncate">
+                              {typeof field.preview === "object"
+                                ? JSON.stringify(field.preview).slice(0, 60)
+                                : String(field.preview).slice(0, 60)}
+                            </p>
+                          </div>
+                          <input
+                            type="checkbox"
+                            checked={isSelected}
+                            onChange={() => {}}
+                            className="ml-2 rounded bg-slate-700 border-slate-600 cursor-pointer"
+                          />
                         </div>
-                        <input
-                          type="checkbox"
-                          checked={selectedFields.includes(field.key)}
-                          onChange={() => {}}
-                          className="rounded bg-slate-700 border-slate-600"
-                        />
-                      </div>
-                    ))
+                      )
+                    })
                   )}
                 </div>
 
@@ -300,7 +428,7 @@ export function AddWidgetModal({ open, onOpenChange }: AddWidgetModalProps) {
               disabled={!testData || selectedFields.length === 0 || (useWebSocket && !wsUrl)}
               className="bg-emerald-500 hover:bg-emerald-600 text-white"
             >
-              Add Widget
+              {editingWidget ? "Update Widget" : "Add Widget"}
             </Button>
           </div>
         </div>

@@ -9,9 +9,11 @@ import { getNestedValue } from "@/lib/api-utils"
 interface ChartWidgetProps {
   widget: Widget
   isDragging?: boolean
+  onEdit?: (widget: Widget) => void
+  dragHandleProps?: React.HTMLAttributes<HTMLElement>
 }
 
-export function ChartWidget({ widget, isDragging }: ChartWidgetProps) {
+export function ChartWidget({ widget, isDragging, onEdit, dragHandleProps }: ChartWidgetProps) {
   const chartData = useMemo(() => {
     if (!widget.data || widget.selectedFields.length < 1) return []
 
@@ -29,22 +31,38 @@ export function ChartWidget({ widget, isDragging }: ChartWidgetProps) {
     return []
   }, [widget.data, widget.selectedFields])
 
+  // Empty state: No chart data available
   if (chartData.length === 0) {
     return (
-      <WidgetCard widget={widget} isDragging={isDragging}>
-        <p className="text-sm text-slate-400">No chart data available</p>
+      <WidgetCard widget={widget} isDragging={isDragging} onEdit={onEdit} dragHandleProps={dragHandleProps}>
+        <div className="flex flex-col items-center justify-center py-8 text-center">
+          <p className="text-sm text-muted-foreground mb-2">No chart data available</p>
+          <p className="text-xs text-muted-foreground/70">
+            {!widget.data
+              ? "Waiting for API response..."
+              : widget.selectedFields.length === 0
+                ? "Please select numeric fields in widget settings"
+                : "Data structure may not be suitable for chart view"}
+          </p>
+        </div>
       </WidgetCard>
     )
   }
 
   return (
-    <WidgetCard widget={widget} isDragging={isDragging}>
+    <WidgetCard widget={widget} isDragging={isDragging} onEdit={onEdit} dragHandleProps={dragHandleProps}>
       <ResponsiveContainer width="100%" height={200}>
         <LineChart data={chartData}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-          <XAxis dataKey="name" stroke="#94a3b8" />
-          <YAxis stroke="#94a3b8" />
-          <Tooltip contentStyle={{ backgroundColor: "#1e293b", border: "1px solid #475569" }} />
+          <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+          <XAxis dataKey="name" className="stroke-muted-foreground" />
+          <YAxis className="stroke-muted-foreground" />
+          <Tooltip 
+            contentStyle={{ 
+              backgroundColor: "hsl(var(--card))", 
+              border: "1px solid hsl(var(--border))",
+              color: "hsl(var(--foreground))"
+            }} 
+          />
           {widget.selectedFields.map((field, idx) => (
             <Line
               key={field}

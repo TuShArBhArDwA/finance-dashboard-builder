@@ -18,15 +18,15 @@ export function DashboardHeader({ onAddWidget }: DashboardHeaderProps) {
 
   return (
     <>
-      <header className="border-b border-slate-800 bg-slate-950 dark:bg-slate-950 px-6 py-4">
+      <header className="border-b border-border bg-background px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500">
-              <BarChart3 className="h-5 w-5 text-white" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
+              <BarChart3 className="h-5 w-5 text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-semibold text-white">Finance Dashboard</h1>
-              <p className="text-sm text-slate-400">
+              <h1 className="text-xl font-semibold text-foreground">Finance Dashboard</h1>
+              <p className="text-sm text-muted-foreground">
                 {widgets.length > 0
                   ? `${widgets.length} active widget${widgets.length !== 1 ? "s" : ""} • Real-time data`
                   : "Connect to APIs and build your custom dashboard"}
@@ -38,16 +38,16 @@ export function DashboardHeader({ onAddWidget }: DashboardHeaderProps) {
               variant="outline"
               size="icon"
               onClick={() => setTemplateModalOpen(true)}
-              className="h-9 w-9 border-slate-700 hover:bg-slate-800 bg-transparent"
+              className="h-9 w-9"
               title="Load dashboard template"
             >
-              <Palette className="h-4 w-4 text-slate-400" />
+              <Palette className="h-4 w-4" />
               <span className="sr-only">Load template</span>
             </Button>
             <ThemeToggle />
             {/* </CHANGE> */}
             <ExportImportButtons />
-            <Button onClick={onAddWidget} className="gap-2 bg-emerald-500 hover:bg-emerald-600 text-white">
+            <Button onClick={onAddWidget} className="gap-2">
               <Plus className="h-4 w-4" />
               Add Widget
             </Button>

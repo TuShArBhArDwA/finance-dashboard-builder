@@ -9,23 +9,31 @@ export function ExampleWidgetsPanel() {
   const addWidget = useDashboardStore((state) => state.addWidget)
   const [isVisible, setIsVisible] = useState(true)
 
+  // Use examples from finance-examples library
   const examples = [
     {
-      name: "Bitcoin Price",
+      name: "Bitcoin Price (Coinbase)",
       apiUrl: "https://api.coinbase.com/v2/exchange-rates?currency=BTC",
       displayMode: "card" as const,
       selectedFields: ["data.rates.USD"],
       refreshInterval: 60,
     },
     {
-      name: "Multi Crypto",
+      name: "Ethereum Price (Coinbase)",
+      apiUrl: "https://api.coinbase.com/v2/exchange-rates?currency=ETH",
+      displayMode: "card" as const,
+      selectedFields: ["data.rates.USD"],
+      refreshInterval: 60,
+    },
+    {
+      name: "Multi Crypto Prices",
       apiUrl: "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,cardano&vs_currencies=usd",
       displayMode: "card" as const,
       selectedFields: ["bitcoin.usd", "ethereum.usd", "cardano.usd"],
       refreshInterval: 120,
     },
     {
-      name: "USD Rates",
+      name: "USD Exchange Rates",
       apiUrl: "https://api.exchangerate-api.com/v4/latest/USD",
       displayMode: "table" as const,
       selectedFields: ["rates"],
